@@ -1,44 +1,43 @@
-import type {ReactNode} from 'react';
-import clsx from 'clsx';
-import Link from '@docusaurus/Link';
-import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
+import { FC } from 'react';
 import Layout from '@theme/Layout';
-import HomepageFeatures from '@site/src/components/HomepageFeatures';
-import Heading from '@theme/Heading';
+import Link from '@docusaurus/Link';
+import useGlobalData from '@docusaurus/useGlobalData';
 
-import styles from './index.module.css';
+type ManifestSummary = { title: string; slug: string; recordedAt: string };
 
-function HomepageHeader() {
-  const {siteConfig} = useDocusaurusContext();
+const HowToIndex: FC = () => {
+  const globalData = useGlobalData();
+  const { allManifests } = (globalData['scenario-pages-plugin']['default'] || {}) as {
+    allManifests: Record<string, ManifestSummary & { steps: any[]; artifacts: any }>;
+  };
+  
+  const items: ManifestSummary[] = Object.values(allManifests || {}).map(({ title, slug, recordedAt }) => ({
+    title,
+    slug,
+    recordedAt,
+  }));
+
   return (
-    <header className={clsx('hero hero--primary', styles.heroBanner)}>
-      <div className="container">
-        <Heading as="h1" className="hero__title">
-          {siteConfig.title}
-        </Heading>
-        <p className="hero__subtitle">{siteConfig.tagline}</p>
-        <div className={styles.buttons}>
-          <Link
-            className="button button--secondary button--lg"
-            to="/docs/intro">
-            Docusaurus Tutorial - 5min ⏱️
-          </Link>
-        </div>
-      </div>
-    </header>
-  );
-}
+    <Layout title="How-To Guides" description="Generated How-To guides from scenarios">
+      <main style={{ maxWidth: 920, margin: '0 auto', padding: '24px 16px' }}>
+        <h1>How-To Guides</h1>
+        <p style={{ opacity: 0.8 }}>
+          These pages are generated automatically from Playwright doc scenarios.
+        </p>
 
-export default function Home(): ReactNode {
-  const {siteConfig} = useDocusaurusContext();
-  return (
-    <Layout
-      title={`Hello from ${siteConfig.title}`}
-      description="Description will go into a meta tag in <head />">
-      <HomepageHeader />
-      <main>
-        <HomepageFeatures />
+        <ul>
+          {items.map(item => (
+            <li key={item.slug}>
+              <Link to={`/${item.slug}`}>{item.title}</Link>{' '}
+              <span style={{ opacity: 0.7, fontSize: 14 }}>
+                ({new Date(item.recordedAt).toLocaleDateString()})
+              </span>
+            </li>
+          ))}
+        </ul>
       </main>
     </Layout>
   );
 }
+
+export default HowToIndex;

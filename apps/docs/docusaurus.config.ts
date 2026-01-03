@@ -5,9 +5,9 @@ import type * as Preset from '@docusaurus/preset-classic';
 // This runs in Node.js - Don't use client-side code here (browser APIs, JSX...)
 
 const config: Config = {
-  title: 'Test Docs Demo',
+  title: 'Test-Driven Documentation Demo',
   tagline: 'Dinosaurs are cool',
-  favicon: 'img/favicon.ico',
+  favicon: 'img/favicon.svg',
 
   // Future flags, see https://docusaurus.io/docs/api/docusaurus-config#future
   future: {
@@ -48,6 +48,10 @@ const config: Config = {
     ],
   ],
 
+  plugins: [
+    require.resolve('./plugins/scenarioPagesPlugin'),
+  ],
+
   themeConfig: {
     // Replace with your project's social card
     image: 'img/docusaurus-social-card.jpg',
@@ -55,10 +59,10 @@ const config: Config = {
       respectPrefersColorScheme: true,
     },
     navbar: {
-      title: 'Test Docs Demo',
+      title: 'Test-Driven Documentation Demo',
       logo: {
-        alt: 'Test Docs Demo Logo',
-        src: 'img/logo.svg',
+        alt: 'Test-Driven Documentation Demo Logo',
+        src: 'img/favicon.svg',
       },
       items: [
         {
