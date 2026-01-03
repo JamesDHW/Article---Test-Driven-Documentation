@@ -22,7 +22,10 @@ export default defineConfig({
     baseURL: 'http://localhost:3000',
     // default (non-doc) settings:
     trace: 'retain-on-failure',
-    video: 'retain-on-failure'
+    video: 'retain-on-failure',
+    launchOptions: {
+      slowMo: 600
+    }
   },
 
   projects: [
