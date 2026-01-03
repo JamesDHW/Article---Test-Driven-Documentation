@@ -20,25 +20,23 @@ export default defineConfig({
 
   use: {
     baseURL: 'http://localhost:3000',
-    // default (non-doc) settings:
     trace: 'retain-on-failure',
-    video: 'retain-on-failure',
-    launchOptions: {
-      slowMo: 600
-    }
+    video: 'retain-on-failure'
   },
 
   projects: [
     {
       name: 'e2e',
-      grepInvert: /@doc/
     },
     {
       name: 'docs',
       grep: /@doc/,
       use: {
         trace: 'on',
-        video: 'on'
+        video: 'on',
+        launchOptions: {
+          slowMo: 600
+        }
       }
     }
   ]

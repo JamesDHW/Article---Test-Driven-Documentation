@@ -9,6 +9,7 @@
     "lint": "eslint",
     "test": "playwright test",
     "test:docs": "playwright test --project=docs",
+    "test:e2e": "playwright test --project=e2e",
     "pw:publish": "node ./scripts/publish-doc-scenarios.mjs"
   },
   "dependencies": {
