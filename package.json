@@ -1,0 +1,11 @@
+{
+  "name": "test-docs-demo",
+  "private": true,
+  "packageManager": "pnpm",
+  "scripts": {
+    "dev:web": "pnpm --filter web dev",
+    "dev:docs": "pnpm --filter docs start",
+    "test:docs": "pnpm --filter web test:docs && pnpm --filter docs build",
+    "publish:docs": "pnpm --filter web pw:publish && pnpm --filter docs build"
+  }
+}
