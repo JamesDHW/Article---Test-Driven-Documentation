@@ -1,0 +1,23 @@
+{
+  "title": "Create a project and add your first task",
+  "slug": "create-a-project-and-add-your-first-task",
+  "recordedAt": "2026-01-03T18:34:21.288Z",
+  "steps": [
+    {
+      "title": "Sign in",
+      "durationMs": 3742
+    },
+    {
+      "title": "Create a new project",
+      "durationMs": 4522
+    },
+    {
+      "title": "Add your first task",
+      "durationMs": 4745
+    }
+  ],
+  "artifacts": {
+    "video": "/scenarios/create-a-project-and-add-your-first-task/video.webm",
+    "trace": "/scenarios/create-a-project-and-add-your-first-task/trace.zip"
+  }
+}
