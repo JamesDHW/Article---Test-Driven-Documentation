@@ -1,4 +1,4 @@
-import { FC, useRef } from 'react';
+import { FC, useRef, useState } from 'react';
 
 type ScenarioPlayerProps = { manifest: {
   title: string;
@@ -23,13 +23,36 @@ const calculateStepStartTimes = (steps: { title: string; durationMs?: number }[]
   return startTimes;
 };
 
+const getActiveStepIndex = (currentTime: number, steps: { title: string; durationMs?: number }[], stepStartTimes: number[]): number | null => {
+  for (let i = steps.length - 1; i >= 0; i--) {
+    const startTime = stepStartTimes[i];
+    const step = steps[i];
+    
+    if (step.durationMs !== undefined) {
+      const endTime = startTime + (step.durationMs / 1000);
+      if (currentTime >= startTime && currentTime < endTime) {
+        return i;
+      }
+    }
+  }
+  return null;
+};
+
 export const ScenarioPlayer: FC<ScenarioPlayerProps> = ({ manifest }) => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const stepStartTimes = calculateStepStartTimes(manifest.steps);
+  const [currentTime, setCurrentTime] = useState(0);
+  const activeStepIndex = getActiveStepIndex(currentTime, manifest.steps, stepStartTimes);
 
   const handleStepClick = (startTimeSeconds: number) => {
     if (videoRef.current) {
       videoRef.current.currentTime = startTimeSeconds;
+    }
+  };
+
+  const handleTimeUpdate = () => {
+    if (videoRef.current) {
+      setCurrentTime(videoRef.current.currentTime);
     }
   };
 
@@ -46,7 +69,7 @@ export const ScenarioPlayer: FC<ScenarioPlayerProps> = ({ manifest }) => {
       </div>
 
       {manifest.artifacts.video ? (
-        <video ref={videoRef} controls style={{ width: '100%', marginTop: 12, borderRadius: 12 }}>
+        <video ref={videoRef} controls onTimeUpdate={handleTimeUpdate} style={{ width: '100%', marginTop: 12, borderRadius: 12 }}>
           <source src={manifest.artifacts.video} type="video/webm" />
         </video>
       ) : (
@@ -59,6 +82,15 @@ export const ScenarioPlayer: FC<ScenarioPlayerProps> = ({ manifest }) => {
           {manifest.steps.map((s, i) => {
             const startTime = stepStartTimes[i];
             const isClickable = s.durationMs !== undefined;
+            const isActive = activeStepIndex === i;
+            const isDark = typeof document !== 'undefined' && document.documentElement.getAttribute('data-theme') === 'dark';
+            
+            const getBackgroundColor = () => {
+              if (isActive) {
+                return isDark ? 'rgba(37, 194, 160, 0.2)' : 'rgba(46, 133, 85, 0.15)';
+              }
+              return 'transparent';
+            };
             
             return (
               <li
@@ -73,15 +105,19 @@ export const ScenarioPlayer: FC<ScenarioPlayerProps> = ({ manifest }) => {
                   display: 'flex',
                   alignItems: 'center',
                   gap: '8px',
+                  backgroundColor: getBackgroundColor(),
                 }}
                 onMouseEnter={(e) => {
-                  if (isClickable) {
-                    const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+                  if (isClickable && !isActive) {
                     e.currentTarget.style.backgroundColor = isDark ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.05)';
                   }
                 }}
                 onMouseLeave={(e) => {
-                  e.currentTarget.style.backgroundColor = 'transparent';
+                  if (!isActive) {
+                    e.currentTarget.style.backgroundColor = 'transparent';
+                  } else {
+                    e.currentTarget.style.backgroundColor = getBackgroundColor();
+                  }
                 }}
               >
                 {isClickable && (
@@ -90,7 +126,7 @@ export const ScenarioPlayer: FC<ScenarioPlayerProps> = ({ manifest }) => {
                     height="16"
                     viewBox="0 0 16 16"
                     fill="currentColor"
-                    style={{ opacity: 0.6, flexShrink: 0 }}
+                    style={{ opacity: isActive ? 1 : 0.6, flexShrink: 0 }}
                   >
                     <path d="M6 4l6 4-6 4V4z" />
                   </svg>
