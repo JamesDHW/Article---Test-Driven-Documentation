@@ -66,6 +66,10 @@ export const test = base.extend<{
             return createEnhancedLocator(locator, page, isDocMode);
         };
 
+        if (isDocMode) {
+            await enableCursorOverlay(page);
+        }
+
         await use(enhancedPage);
     },
 });
