@@ -1,6 +1,6 @@
 import { test, expect } from '../fixtures';
 
-test('@doc Create a project and add your first task', async ({ page }) => {
+test('Create a project and add your first task', { tag: '@doc' }, async ({ page }) => {
     await test.step('Sign in', async () => {
         await page.goto('/login');
         await page.getByLabel('Email').type('alex@example.com');

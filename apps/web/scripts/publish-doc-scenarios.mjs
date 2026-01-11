@@ -17,7 +17,7 @@ function slugify(s) {
 }
 
 // Playwright JSON report schema contains suites/specs/tests/results.
-// We'll walk it and pick doc tests by title containing '@doc'.
+// We'll walk it and pick doc tests by tag '@doc' on the spec.
 const report = JSON.parse(fs.readFileSync(reportPath, 'utf-8'));
 
 function* walkSuites(suite) {
@@ -27,16 +27,20 @@ function* walkSuites(suite) {
   }
 }
 
+function hasDocTag(spec) {
+  const tags = spec.tags || [];
+  return tags.includes('@doc') || tags.includes('doc');
+}
+
 function extractDocTests() {
   const all = [];
   for (const topLevelSuite of report.suites || []) {
     for (const suite of walkSuites(topLevelSuite)) {
       if (!suite) continue;
       for (const spec of suite.specs || []) {
+        if (!hasDocTag(spec)) continue;
+        
         for (const t of spec.tests || []) {
-          const title = `${spec.title}`;
-          if (!title.includes('@doc')) continue;
-
           // pick the latest result (usually only one)
           const result = (t.results || [])[t.results.length - 1];
           if (!result) continue;
@@ -70,7 +74,7 @@ if (docTests.length === 0) {
 ensureDir(docsStaticDir);
 
 for (const { spec, result } of docTests) {
-  const rawTitle = spec.title.replace('@doc', '').trim();
+  const rawTitle = spec.title.trim();
   const slug = slugify(rawTitle);
 
   const outDir = path.join(docsStaticDir, slug);

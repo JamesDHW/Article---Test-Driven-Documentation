@@ -1,19 +1,19 @@
 {
   "title": "Create a project and add your first task",
   "slug": "create-a-project-and-add-your-first-task",
-  "recordedAt": "2026-01-03T18:34:21.288Z",
+  "recordedAt": "2026-01-11T00:08:48.367Z",
   "steps": [
     {
       "title": "Sign in",
-      "durationMs": 3742
+      "durationMs": 3729
     },
     {
       "title": "Create a new project",
-      "durationMs": 4522
+      "durationMs": 4506
     },
     {
       "title": "Add your first task",
-      "durationMs": 4745
+      "durationMs": 4816
     }
   ],
   "artifacts": {
