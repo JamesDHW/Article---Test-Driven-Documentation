@@ -14,6 +14,7 @@ type PageTopbarProps = {
   onMenuPress: () => void;
   actionLabel?: string;
   actionIcon?: React.ComponentProps<typeof SymbolView>['name'];
+  actionTestId?: string;
   onActionPress?: () => void;
 };
 
@@ -24,6 +25,7 @@ export function PageTopbar({
   onMenuPress,
   actionLabel,
   actionIcon,
+  actionTestId,
   onActionPress,
 }: PageTopbarProps) {
   const theme = useTheme();
@@ -33,7 +35,12 @@ export function PageTopbar({
       <View style={styles.row}>
         <View style={styles.left}>
           {showMenuButton ? (
-            <Pressable onPress={onMenuPress} style={({ pressed }) => [styles.menuButton, pressed && styles.pressed]}>
+            <Pressable
+              testID="topbar-menu"
+              accessibilityRole="button"
+              accessibilityLabel="Open menu"
+              onPress={onMenuPress}
+              style={({ pressed }) => [styles.menuButton, pressed && styles.pressed]}>
               <SymbolView
                 tintColor={theme.text}
                 size={18}
@@ -46,15 +53,21 @@ export function PageTopbar({
             size={22}
             name={icon}
           />
-          <ThemedText type="smallBold" style={styles.title}>
+          <ThemedText testID="topbar-title" accessibilityRole="header" accessibilityLabel={title} type="smallBold" style={styles.title}>
             {title}
           </ThemedText>
         </View>
 
         {actionLabel && actionIcon && onActionPress ? (
-          <Pressable onPress={onActionPress} style={({ pressed }) => [styles.actionButton, pressed && styles.pressed]}>
+          <Pressable
+            testID={actionTestId}
+            accessibilityRole="button"
+            accessibilityLabel={actionLabel}
+            accessible
+            onPress={onActionPress}
+            style={({ pressed }) => [styles.actionButton, pressed && styles.pressed]}>
             <SymbolView tintColor="#111111" size={14} name={actionIcon} />
-            <ThemedText type="smallBold" style={styles.actionText}>
+            <ThemedText importantForAccessibility="no-hide-descendants" type="smallBold" style={styles.actionText}>
               {actionLabel}
             </ThemedText>
           </Pressable>

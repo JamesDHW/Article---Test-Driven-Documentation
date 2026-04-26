@@ -30,6 +30,15 @@ export default function ProjectDetailsScreen() {
 
   const tasks = getProjectTasks(project.id);
 
+  function closeTaskFormRoute() {
+    if (router.canGoBack()) {
+      router.back();
+      return;
+    }
+
+    router.replace(`/(app)/projects/${projectId}`);
+  }
+
   function onSubmitTask() {
     const trimmedTaskName = taskName.trim();
     if (!trimmedTaskName) {
@@ -40,17 +49,17 @@ export default function ProjectDetailsScreen() {
     createTaskForProject(projectId, trimmedTaskName, assignedTo);
     setTaskName('');
     setSelectedAssignee('');
-    router.replace(`/(app)/projects/${projectId}`);
+    closeTaskFormRoute();
   }
 
   function onCancelTaskCreation() {
     setTaskName('');
     setSelectedAssignee('');
-    router.replace(`/(app)/projects/${projectId}`);
+    closeTaskFormRoute();
   }
 
   return (
-    <ScrollView contentContainerStyle={styles.content}>
+    <ScrollView testID="project-detail-screen" keyboardShouldPersistTaps="handled" contentContainerStyle={styles.content}>
       <View style={styles.metaRow}>
         <Pressable onPress={() => router.back()} style={({ pressed }) => [styles.backRow, pressed && styles.pressed]}>
           <SymbolView
@@ -79,6 +88,8 @@ export default function ProjectDetailsScreen() {
           <View style={styles.fieldGroup}>
             <ThemedText>Task name</ThemedText>
             <TextInput
+              testID="task-name-input"
+              accessibilityLabel="Task name"
               value={taskName}
               onChangeText={setTaskName}
               placeholder="Task name"
@@ -99,6 +110,10 @@ export default function ProjectDetailsScreen() {
             </View>
             <View style={styles.assigneeRow}>
               <Pressable
+                testID="task-assignee-unassigned"
+                accessibilityRole="button"
+                accessibilityLabel="Assign to Unassigned"
+                accessibilityState={{ selected: selectedAssignee === '' }}
                 onPress={() => setSelectedAssignee('')}
                 style={({ pressed }) => [
                   styles.assigneePill,
@@ -111,6 +126,10 @@ export default function ProjectDetailsScreen() {
               {assignees.map((assignee) => (
                 <Pressable
                   key={assignee}
+                  testID={`task-assignee-${assignee.toLowerCase()}`}
+                  accessibilityRole="button"
+                  accessibilityLabel={`Assign to ${assignee}`}
+                  accessibilityState={{ selected: selectedAssignee === assignee }}
                   onPress={() => setSelectedAssignee(assignee)}
                   style={({ pressed }) => [
                     styles.assigneePill,
@@ -125,10 +144,14 @@ export default function ProjectDetailsScreen() {
 
           <View style={styles.formActions}>
             <Pressable
+              testID="task-form-submit-button"
+              accessibilityRole="button"
+              accessibilityLabel="Submit new task"
+              accessible
               onPress={onSubmitTask}
               style={({ pressed }) => [styles.primaryButton, pressed && styles.pressed]}>
               <SymbolView tintColor="#111111" size={16} name={{ ios: 'plus', android: 'add', web: 'add' }} />
-              <ThemedText type="smallBold" style={styles.primaryButtonText}>
+              <ThemedText importantForAccessibility="no-hide-descendants" type="smallBold" style={styles.primaryButtonText}>
                 Add task
               </ThemedText>
             </Pressable>

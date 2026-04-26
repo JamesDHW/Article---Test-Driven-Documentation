@@ -5,10 +5,12 @@
   "scripts": {
     "start": "expo start",
     "reset-project": "node ./scripts/reset-project.js",
-    "android": "expo start --android",
-    "ios": "expo start --ios",
+    "android": "expo run:android",
+    "ios": "expo run:ios",
+    "ios:dev": "expo run:ios",
     "web": "expo start --web",
-    "lint": "expo lint"
+    "lint": "expo lint",
+    "test:e2e:maestro": "maestro test .maestro/create-project-and-task.yaml"
   },
   "dependencies": {
     "@react-navigation/bottom-tabs": "^7.15.5",

@@ -1,0 +1,12 @@
+appId: com.testdrivendocumentationdemo.mobile
+---
+# Guest path: fill email and sign in, then wait for the projects list.
+- tapOn:
+    id: login-email-input
+- inputText: alex@example.com
+- tapOn:
+    id: login-sign-in-button
+- extendedWaitUntil:
+    visible:
+      id: projects-screen
+    timeout: 15000

@@ -32,6 +32,8 @@ export default function NewProjectScreen() {
       <View style={styles.fieldGroup}>
         <ThemedText>Project name</ThemedText>
         <TextInput
+          testID="new-project-name-input"
+          accessibilityLabel="Project name"
           value={name}
           onChangeText={setName}
           placeholder="Project name"
@@ -42,9 +44,15 @@ export default function NewProjectScreen() {
       </View>
 
       <View style={styles.actionsRow}>
-        <Pressable onPress={onSubmit} style={({ pressed }) => [styles.primaryButton, pressed && styles.pressed]}>
+        <Pressable
+          testID="new-project-create-button"
+          accessibilityRole="button"
+          accessibilityLabel="Create project"
+          accessible
+          onPress={onSubmit}
+          style={({ pressed }) => [styles.primaryButton, pressed && styles.pressed]}>
           <SymbolView tintColor="#111111" size={16} name={{ ios: 'plus', android: 'add', web: 'add' }} />
-          <ThemedText type="smallBold" style={styles.primaryButtonText}>
+          <ThemedText importantForAccessibility="no-hide-descendants" type="smallBold" style={styles.primaryButtonText}>
             Create project
           </ThemedText>
         </Pressable>

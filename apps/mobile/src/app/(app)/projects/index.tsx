@@ -18,7 +18,7 @@ export default function ProjectsScreen() {
   const { getProjectTasks, projects } = useAppState();
 
   return (
-    <ScrollView contentContainerStyle={styles.scrollContent}>
+    <ScrollView testID="projects-screen" contentContainerStyle={styles.scrollContent}>
       {projects.length === 0 ? (
         <ThemedText themeColor="textSecondary">No projects yet. Create your first project to get started.</ThemedText>
       ) : (

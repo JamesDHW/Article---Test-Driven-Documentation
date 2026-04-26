@@ -1,4 +1,4 @@
-import { usePathname, useRouter } from 'expo-router';
+import { useGlobalSearchParams, usePathname, useRouter } from 'expo-router';
 import { SymbolView } from 'expo-symbols';
 import React, { PropsWithChildren, useMemo, useState } from 'react';
 import { Pressable, StyleSheet, useWindowDimensions, View } from 'react-native';
@@ -8,6 +8,7 @@ import { PageTopbar } from '@/components/page-topbar';
 import { SidebarNav } from '@/components/sidebar-nav';
 import { ThemedView } from '@/components/themed-view';
 import { Spacing } from '@/constants/theme';
+import { type ProjectsRoute, parseProjectsRoute } from '@/lib/projects-path';
 import { useAppState } from '@/providers/app-state-provider';
 
 type TopbarMeta = {
@@ -15,42 +16,50 @@ type TopbarMeta = {
   icon: React.ComponentProps<typeof SymbolView>['name'];
   actionLabel?: string;
   actionIcon?: React.ComponentProps<typeof SymbolView>['name'];
+  actionTestId?: string;
 };
 
-function getTopbarMeta(pathname: string, getProject: (projectId: string) => { name: string } | undefined): TopbarMeta {
-  if (pathname === '/projects/new') {
+function getTopbarMeta(
+  route: ProjectsRoute,
+  getProject: (projectId: string) => { name: string } | undefined,
+  isNewTaskFormOpen: boolean,
+): TopbarMeta {
+  if (route.kind === 'new') {
     return {
       title: 'Create new project',
       icon: { ios: 'folder.badge.plus', android: 'create_new_folder', web: 'create_new_folder' },
     };
   }
 
-  if (pathname === '/projects') {
+  if (route.kind === 'list') {
     return {
       title: 'Projects',
       icon: { ios: 'folder', android: 'folder', web: 'folder' },
       actionLabel: 'New project',
       actionIcon: { ios: 'plus', android: 'add', web: 'add' },
+      actionTestId: 'topbar-new-project',
     };
   }
 
-  if (pathname.startsWith('/projects/')) {
-    const projectId = pathname.replace('/projects/', '');
+  if (route.kind === 'detail') {
+    const { projectId } = route;
     const project = getProject(projectId);
-    if (project) {
+    const title = project ? project.name : 'Project';
+    const detailIcon = { ios: 'checkmark.square' as const, android: 'check_box' as const, web: 'check_box' as const };
+
+    if (isNewTaskFormOpen) {
       return {
-        title: project.name,
-        icon: { ios: 'checkmark.square', android: 'check_box', web: 'check_box' },
-        actionLabel: 'Add task',
-        actionIcon: { ios: 'plus', android: 'add', web: 'add' },
+        title,
+        icon: detailIcon,
       };
     }
 
     return {
-      title: 'Project',
-      icon: { ios: 'checkmark.square', android: 'check_box', web: 'check_box' },
+      title,
+      icon: detailIcon,
       actionLabel: 'Add task',
       actionIcon: { ios: 'plus', android: 'add', web: 'add' },
+      actionTestId: 'topbar-add-task',
     };
   }
 
@@ -60,27 +69,45 @@ function getTopbarMeta(pathname: string, getProject: (projectId: string) => { na
   };
 }
 
+function readNewTaskParam(params: ReturnType<typeof useGlobalSearchParams>): string | undefined {
+  const raw = params.newTask;
+  if (typeof raw === 'string') {
+    return raw;
+  }
+  if (Array.isArray(raw) && raw.length > 0 && typeof raw[0] === 'string') {
+    return raw[0];
+  }
+  return undefined;
+}
+
 export function AppShell({ children }: PropsWithChildren) {
   const pathname = usePathname();
+  const globalParams = useGlobalSearchParams();
   const router = useRouter();
   const { width } = useWindowDimensions();
   const { getProject } = useAppState();
   const isWideLayout = width >= 1024;
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
-  const pageMeta = useMemo(() => getTopbarMeta(pathname, getProject), [getProject, pathname]);
+  const projectsRoute = useMemo(() => parseProjectsRoute(pathname), [pathname]);
+  const newTaskParam = readNewTaskParam(globalParams);
+  const isNewTaskFormOpen = projectsRoute.kind === 'detail' && newTaskParam === '1';
+  const pageMeta = useMemo(
+    () => getTopbarMeta(projectsRoute, getProject, isNewTaskFormOpen),
+    [getProject, isNewTaskFormOpen, projectsRoute],
+  );
 
   function onTopbarActionPress() {
-    if (pathname === '/projects') {
+    if (projectsRoute.kind === 'list') {
       router.push('/(app)/projects/new');
       return;
     }
 
-    if (!pathname.startsWith('/projects/')) {
+    if (projectsRoute.kind !== 'detail') {
       return;
     }
 
-    const projectId = pathname.replace('/projects/', '');
+    const { projectId } = projectsRoute;
     router.push({
       pathname: '/(app)/projects/[id]',
       params: {
@@ -108,6 +135,7 @@ export function AppShell({ children }: PropsWithChildren) {
               onMenuPress={() => setSidebarOpen(true)}
               actionLabel={pageMeta.actionLabel}
               actionIcon={pageMeta.actionIcon}
+              actionTestId={pageMeta.actionTestId}
               onActionPress={pageMeta.actionLabel ? onTopbarActionPress : undefined}
             />
             <View style={styles.content}>{children}</View>

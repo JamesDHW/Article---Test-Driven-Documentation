@@ -8,9 +8,11 @@
     "scheme": "mobile",
     "userInterfaceStyle": "automatic",
     "ios": {
+      "bundleIdentifier": "com.testdrivendocumentationdemo.mobile",
       "icon": "./assets/expo.icon"
     },
     "android": {
+      "package": "com.testdrivendocumentationdemo.mobile",
       "adaptiveIcon": {
         "backgroundColor": "#E6F4FE",
         "foregroundImage": "./assets/images/android-icon-foreground.png",

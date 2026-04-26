@@ -7,6 +7,7 @@ import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { Spacing } from '@/constants/theme';
 import { useTheme } from '@/hooks/use-theme';
+import { isProjectsSectionPath } from '@/lib/projects-path';
 import { useAppState } from '@/providers/app-state-provider';
 
 type SidebarNavProps = {
@@ -17,7 +18,7 @@ export function SidebarNav({ onItemPress }: SidebarNavProps) {
   const theme = useTheme();
   const pathname = usePathname();
   const { currentUser, logoutCurrentUser } = useAppState();
-  const projectsActive = pathname.startsWith('/projects');
+  const projectsActive = isProjectsSectionPath(pathname);
 
   function closeSidebarIfNeeded() {
     if (!onItemPress) {

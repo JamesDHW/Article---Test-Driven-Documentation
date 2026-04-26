@@ -51,6 +51,8 @@ export default function LoginScreen() {
             </View>
 
             <TextInput
+              testID="login-email-input"
+              accessibilityLabel="Email"
               value={email}
               autoCapitalize="none"
               keyboardType="email-address"
@@ -62,13 +64,19 @@ export default function LoginScreen() {
             />
           </View>
 
-          <Pressable onPress={onSubmit} style={({ pressed }) => [styles.primaryButton, pressed && styles.pressed]}>
+          <Pressable
+            testID="login-sign-in-button"
+            accessibilityRole="button"
+            accessibilityLabel="Sign in"
+            accessible
+            onPress={onSubmit}
+            style={({ pressed }) => [styles.primaryButton, pressed && styles.pressed]}>
             <SymbolView
               tintColor="#111111"
               size={16}
               name={{ ios: 'rectangle.portrait.and.arrow.right', android: 'login', web: 'login' }}
             />
-            <ThemedText type="smallBold" style={styles.primaryButtonText}>
+            <ThemedText importantForAccessibility="no-hide-descendants" type="smallBold" style={styles.primaryButtonText}>
               Sign in
             </ThemedText>
           </Pressable>
