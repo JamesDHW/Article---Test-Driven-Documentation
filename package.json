@@ -8,6 +8,8 @@
     "dev:docs": "pnpm --filter docs start",
     "test:docs": "pnpm --filter web test:docs && pnpm --filter docs build",
     "publish:docs": "pnpm --filter web pw:publish && pnpm --filter docs build",
+    "publish:docs:mobile": "pnpm --filter mobile docs:mobile && pnpm --filter docs build",
+    "publish:docs:all": "pnpm --filter web pw:publish && pnpm --filter mobile docs:mobile && pnpm --filter docs build",
     "test:mobile:e2e": "pnpm --filter mobile test:e2e:maestro"
   }
 }

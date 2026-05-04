@@ -1,2 +1,4 @@
 /node_modules
 .cursor
+build/
+apps/mobile/.maestro/.generated/

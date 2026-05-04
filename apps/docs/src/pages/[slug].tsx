@@ -3,14 +3,7 @@ import Layout from '@theme/Layout';
 import { useLocation } from '@docusaurus/router';
 import useGlobalData from '@docusaurus/useGlobalData';
 import { ScenarioPlayer } from '@site/src/components/ScenarioPlayer';
-
-type Manifest = {
-  title: string;
-  slug: string;
-  recordedAt: string;
-  steps: { title: string; durationMs?: number }[];
-  artifacts: { video: string | null; trace: string | null };
-};
+import { ScenarioManifest } from '@site/src/types/scenarioManifest';
 
 const useSlugFromPath = () => {
   const { pathname } = useLocation();
@@ -22,7 +15,7 @@ export const AutoHowToPage: FC = () => {
   const slug = useSlugFromPath();
   const globalData = useGlobalData();
   const { allManifests } = (globalData['scenario-pages-plugin']['default'] || {}) as {
-    allManifests: Record<string, Manifest>;
+    allManifests: Record<string, ScenarioManifest>;
   };
   
   const manifest = slug ? allManifests?.[slug] : null;
@@ -34,7 +27,7 @@ export const AutoHowToPage: FC = () => {
         <h1>{title}</h1>
 
         <p style={{ opacity: 0.8 }}>
-          This page was generated from an executable Playwright scenario.
+          This page was generated from an executable E2E scenario.
         </p>
 
         {manifest && <ScenarioPlayer manifest={manifest} />}

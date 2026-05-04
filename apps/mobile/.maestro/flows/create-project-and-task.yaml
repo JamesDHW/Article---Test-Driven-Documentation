@@ -6,37 +6,49 @@
 
 appId: com.testdrivendocumentationdemo.mobile
 ---
+
 # Open the app (cold start safe: short swipe after launch per Maestro + iOS notes).
-- launchApp
-
-- swipe:
-    direction: DOWN
-    duration: 100
-
-# Wait until the splash is gone and the shell is interactive.
-- extendedWaitUntil:
-    visible:
-      id: auth-loaded
-    timeout: 15000
+- runFlow:
+    label: Launch app and wait for auth screen
+    commands:
+      - launchApp
+      - swipe:
+          direction: DOWN
+          duration: 100
+      - extendedWaitUntil:
+          visible:
+            id: auth-loaded
+          timeout: 15000
 
 # If we are logged out, complete sign-in; if already logged in, this block is skipped.
 - runFlow:
+    label: Sign in guest
     when:
       visible:
         id: login-email-input
-    file: flows/sign-in-guest.yaml
+    file: ../sub-flows/sign-in-guest.yaml
 
 # We should land on the projects list with the top bar title "Projects".
 - extendedWaitUntil:
+    label: See projects list appear
     visible:
       id: projects-screen
     timeout: 10000
 
 - assertVisible: Projects
+- takeScreenshot: 01-projects-list
 
 # Start a new project from the top bar.
 - tapOn:
+    label: Tap new project button
     id: topbar-new-project
+
+# Wait for the new-project form to be fully rendered before typing.
+- extendedWaitUntil:
+    label: Create a new project named "Website Redesign"
+    visible: Create new project
+    timeout: 10000
+
 
 # Focus the project name field and enter the name Maestro will assert later.
 - tapOn:
@@ -46,28 +58,23 @@ appId: com.testdrivendocumentationdemo.mobile
 - tapOn:
     id: new-project-create-button
 
-- assertVisible: Website Redesign
-
 # Navigate to the new project detail screen (title shows the project name).
 - extendedWaitUntil:
     visible:
       id: project-detail-screen
     timeout: 10000
 
+- assertVisible: Website Redesign
+- takeScreenshot: 02-project-created
+
 # Open the add-task form from the top bar.
 - tapOn:
+    label: Add task "Draft homepage layout"
     id: topbar-add-task
-
-- extendedWaitUntil:
-    visible:
-      id: task-name-input
-    timeout: 10000
 
 - tapOn:
     id: task-name-input
 - inputText: Draft homepage layout
-
-- hideKeyboard
 
 - tapOn:
     id: task-assignee-bob
@@ -80,9 +87,5 @@ appId: com.testdrivendocumentationdemo.mobile
 - tapOn:
     id: task-form-submit-button
 
-# Task row should show the title we just entered.
-- extendedWaitUntil:
-    visible: "Draft homepage layout"
-    timeout: 10000
-
 - assertVisible: "Draft homepage layout"
+- takeScreenshot: 03-task-created

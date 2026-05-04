@@ -1,0 +1,16 @@
+# Optional manual smoke (single flow): `maestro test .maestro/_record_wrapper.yaml`
+#
+# The docs pipeline does NOT use this file. Maestro resolves `runFlow.file` at
+# parse time before `${VAR}` from `-e` is applied, so a static wrapper cannot
+# point at an arbitrary flow via env vars. Instead, `scripts/record-doc-scenarios.mjs`
+# writes `.maestro/.generated/record-<slug>.yaml` per run with a concrete
+# `file:` path relative to that generated file.
+
+appId: com.testdrivendocumentationdemo.mobile
+---
+- startRecording:
+    path: mobile-create-project-and-task
+    optional: true
+- runFlow:
+    file: flows/create-project-and-task.yaml
+- stopRecording

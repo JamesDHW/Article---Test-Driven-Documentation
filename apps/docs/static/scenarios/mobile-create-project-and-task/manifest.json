@@ -1,0 +1,41 @@
+{
+  "title": "Create project and task",
+  "slug": "mobile-create-project-and-task",
+  "source": "maestro",
+  "recordedAt": "2026-05-04T21:15:13.006Z",
+  "steps": [
+    {
+      "title": "Launch app and wait for auth screen",
+      "durationMs": 3621
+    },
+    {
+      "title": "Sign in guest",
+      "durationMs": 4590
+    },
+    {
+      "title": "See projects list appear",
+      "durationMs": 299
+    },
+    {
+      "title": "Tap new project button",
+      "durationMs": 1336
+    },
+    {
+      "title": "Create a new project named \"Website Redesign\"",
+      "durationMs": 4308
+    },
+    {
+      "title": "Add task \"Draft homepage layout\"",
+      "durationMs": 6503
+    }
+  ],
+  "artifacts": {
+    "video": "/scenarios/mobile-create-project-and-task/video.mp4",
+    "trace": null,
+    "screenshots": [
+      "/scenarios/mobile-create-project-and-task/screenshots/01-projects-list.png",
+      "/scenarios/mobile-create-project-and-task/screenshots/02-project-created.png",
+      "/scenarios/mobile-create-project-and-task/screenshots/03-task-created.png"
+    ]
+  }
+}

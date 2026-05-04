@@ -8,9 +8,12 @@
     "android": "expo run:android",
     "ios": "expo run:ios",
     "ios:dev": "expo run:ios",
+    "ios:preview": "expo run:ios --configuration Release",
     "web": "expo start --web",
     "lint": "expo lint",
-    "test:e2e:maestro": "maestro test .maestro/create-project-and-task.yaml"
+    "test:e2e:maestro": "maestro test .maestro/flows",
+    "record:docs:maestro": "node scripts/record-doc-scenarios.mjs",
+    "docs:mobile": "pnpm record:docs:maestro"
   },
   "dependencies": {
     "@react-navigation/bottom-tabs": "^7.15.5",

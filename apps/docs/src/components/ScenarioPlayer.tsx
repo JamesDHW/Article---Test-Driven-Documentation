@@ -1,13 +1,7 @@
 import { FC, useRef, useState } from 'react';
+import { ScenarioManifest } from '@site/src/types/scenarioManifest';
 
-type ScenarioPlayerProps = { manifest: {
-  title: string;
-  slug: string;
-    recordedAt: string;
-    steps: { title: string; durationMs?: number }[];
-    artifacts: { video: string | null; trace: string | null };
-  };
-};
+type ScenarioPlayerProps = { manifest: ScenarioManifest };
 
 const calculateStepStartTimes = (steps: { title: string; durationMs?: number }[]): number[] => {
   const startTimes: number[] = [];
@@ -36,6 +30,19 @@ const getActiveStepIndex = (currentTime: number, steps: { title: string; duratio
     }
   }
   return null;
+};
+
+const getVideoMimeType = (videoPath: string) => {
+  if (videoPath.endsWith('.mp4')) {
+    return 'video/mp4';
+  }
+  if (videoPath.endsWith('.webm')) {
+    return 'video/webm';
+  }
+  if (videoPath.endsWith('.mov')) {
+    return 'video/quicktime';
+  }
+  return undefined;
 };
 
 export const ScenarioPlayer: FC<ScenarioPlayerProps> = ({ manifest }) => {
@@ -69,8 +76,8 @@ export const ScenarioPlayer: FC<ScenarioPlayerProps> = ({ manifest }) => {
       </div>
 
       {manifest.artifacts.video ? (
-        <video ref={videoRef} controls onTimeUpdate={handleTimeUpdate} style={{ width: '100%', marginTop: 12, borderRadius: 12 }}>
-          <source src={manifest.artifacts.video} type="video/webm" />
+        <video ref={videoRef} controls onTimeUpdate={handleTimeUpdate} style={{ width: '100%', maxHeight: '50vh', marginTop: 12, borderRadius: 12 }}>
+          <source src={manifest.artifacts.video} type={getVideoMimeType(manifest.artifacts.video)} />
         </video>
       ) : (
         <div style={{ marginTop: 12 }}>No video found.</div>
@@ -87,7 +94,7 @@ export const ScenarioPlayer: FC<ScenarioPlayerProps> = ({ manifest }) => {
             
             const getBackgroundColor = () => {
               if (isActive) {
-                return isDark ? 'rgba(37, 194, 160, 0.2)' : 'rgba(46, 133, 85, 0.15)';
+                return isDark ? 'rgba(0, 159, 255, 0.22)' : 'rgba(0, 159, 255, 0.14)';
               }
               return 'transparent';
             };
@@ -137,6 +144,24 @@ export const ScenarioPlayer: FC<ScenarioPlayerProps> = ({ manifest }) => {
           })}
         </ol>
       </div>
+
+
+      {manifest.artifacts.screenshots && manifest.artifacts.screenshots.length > 0 ? (
+        <div style={{ marginTop: 12 }}>
+          <div style={{ fontWeight: 600, marginBottom: 6 }}>Screenshots</div>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(180px, 1fr))', gap: 8 }}>
+            {manifest.artifacts.screenshots.map((screenshotPath) => (
+              <a key={screenshotPath} href={screenshotPath} target="_blank" rel="noreferrer">
+                <img
+                  src={screenshotPath}
+                  alt={`${manifest.title} screenshot`}
+                  style={{ width: '100%', borderRadius: 8, display: 'block' }}
+                />
+              </a>
+            ))}
+          </div>
+        </div>
+      ) : null}
     </div>
   );
 }
